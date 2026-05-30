@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>榮原颯人 — AI導入・業務自動化と、その先のものづくり</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f0e6;
+    --paper-2:#efe9da;
+    --ink:#2a2925;
+    --ink-soft:#56524a;
+    --green:#33433a;
+    --green-deep:#26332c;
+    --gold:#a9882c;
+    --gold-soft:#c2a85c;
+    --line:#d8cfba;
+    --brown:#6b5a44;
+    --serif:"Shippori Mincho", serif;
+    --sans:"Zen Kaku Gothic New", sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-weight:300;
+    line-height:1.95;
+    letter-spacing:.02em;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 28px}
+
+  /* fine gold rule motif */
+  .rule{height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent);margin:0 auto;max-width:760px}
+  .tick{display:flex;justify-content:center;gap:6px;margin:54px 0}
+  .tick span{width:1px;height:11px;background:var(--line)}
+  .tick span:nth-child(5){height:18px;background:var(--gold)}
+
+  /* hero */
+  header{position:relative;padding:128px 0 96px;text-align:center;overflow:hidden}
+  .gauge{position:absolute;top:54px;left:50%;transform:translateX(-50%);width:300px;height:150px;opacity:0;animation:fade 2.4s ease forwards .2s}
+  @keyframes fade{to{opacity:.5}}
+  .eyebrow{font-family:var(--serif);font-size:.82rem;letter-spacing:.42em;color:var(--gold);margin-bottom:30px;text-indent:.42em}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,4.6vw,2.65rem);line-height:1.62;color:var(--green-deep);letter-spacing:.04em}
+  h1 .em{color:var(--gold);font-weight:700}
+  .lead{margin-top:34px;font-size:1.02rem;color:var(--ink-soft);line-height:2.1}
+  .sig{margin-top:46px;font-family:var(--serif);font-size:.95rem;color:var(--brown);letter-spacing:.16em}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity 1.1s ease,transform 1.1s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* big statement — large headline-led blocks */
+  .statement{padding:96px 0;text-align:center}
+  .statement .big{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,5.2vw,3rem);line-height:1.55;color:var(--green-deep);letter-spacing:.04em}
+  .statement .big .em{color:var(--gold)}
+  .statement .sub{margin-top:30px;font-size:1.0rem;color:var(--ink-soft);line-height:2.05;max-width:580px;margin-left:auto;margin-right:auto}
+  .statement.dark{background:linear-gradient(165deg,var(--green) 0%,var(--green-deep) 100%)}
+  .statement.dark .big{color:#f1ebde}
+  .statement.dark .sub{color:#cfc8b6}
+
+  /* headline scan — section heads that read on their own */
+  .scan{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,3.8vw,2rem);line-height:1.6;color:var(--green-deep);letter-spacing:.04em;text-align:center;margin-bottom:18px}
+  .scan .em{color:var(--gold)}
+  .scan-sub{text-align:center;font-size:.95rem;color:var(--ink-soft);max-width:540px;margin:0 auto;line-height:1.95}
+
+  /* creed — the central statement of 覚悟 */
+  .creed-lead{font-family:var(--serif);font-weight:500;font-size:clamp(1.05rem,2.6vw,1.4rem);color:var(--ink-soft);line-height:1.85;letter-spacing:.03em;margin-bottom:46px}
+  .creed-mid{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,4.4vw,2.45rem);color:var(--green-deep);line-height:1.7;letter-spacing:.04em;margin-bottom:14px}
+  .creed-you{color:var(--green-deep);position:relative;display:inline-block;background:linear-gradient(transparent 68%,rgba(169,136,44,.22) 68%)}
+  .creed-tail{font-family:var(--serif);font-weight:500;font-size:clamp(1.1rem,2.8vw,1.5rem);color:var(--ink-soft);line-height:1.7;letter-spacing:.05em;margin:40px 0 6px}
+  .creed-word{font-family:var(--serif);font-weight:700;font-size:clamp(3.4rem,12vw,6rem);color:var(--gold);line-height:1.05;letter-spacing:.08em;margin:6px 0 18px;text-shadow:0 1px 0 rgba(169,136,44,.15)}
+  .creed-end{font-family:var(--serif);font-weight:400;font-size:clamp(.95rem,2.4vw,1.15rem);color:var(--brown);letter-spacing:.1em}
+
+  section{padding:74px 0}
+  .label{font-family:var(--serif);font-size:.78rem;letter-spacing:.34em;color:var(--gold);margin-bottom:26px;text-indent:.34em}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.32rem,3.3vw,1.74rem);line-height:1.66;color:var(--green-deep);letter-spacing:.035em;margin-bottom:32px}
+  p{font-size:1.01rem;color:var(--ink-soft);margin-bottom:1.5em}
+  p strong{color:var(--ink);font-weight:500}
+
+  /* concern list */
+  .concerns{list-style:none;margin:30px 0}
+  .concerns li{position:relative;padding:20px 0 20px 34px;border-bottom:1px solid var(--line);font-size:1.0rem;color:var(--ink-soft)}
+  .concerns li:first-child{border-top:1px solid var(--line)}
+  .concerns li::before{content:"";position:absolute;left:4px;top:30px;width:13px;height:1px;background:var(--gold)}
+
+  /* services */
+  .svc{margin-top:14px}
+  .svc-item{padding:34px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:start}
+  .svc-item:first-child{border-top:1px solid var(--line)}
+  .svc-no{font-family:var(--serif);font-size:.9rem;color:var(--gold);letter-spacing:.1em;padding-top:5px}
+  .svc-h{font-family:var(--serif);font-size:1.16rem;color:var(--green-deep);font-weight:600;margin-bottom:12px;letter-spacing:.03em}
+  .svc-h .tag{display:inline-block;font-family:var(--sans);font-size:.66rem;font-weight:500;letter-spacing:.12em;color:var(--gold);border:1px solid var(--gold);border-radius:2px;padding:2px 8px;margin-left:12px;vertical-align:middle;transform:translateY(-2px)}
+  .svc-p{font-size:.95rem;color:var(--ink-soft);line-height:1.95;margin:0}
+
+  /* proof */
+  .proof{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:20px}
+  .proof div{background:var(--paper);padding:30px 26px}
+  .proof .n{font-family:var(--serif);font-size:3.4rem;color:var(--gold);font-weight:600;line-height:1.15}
+  .proof .t{font-size:.86rem;color:var(--ink-soft);margin-top:10px;line-height:1.7}
+  @media(max-width:560px){.proof{grid-template-columns:1fr}}
+
+  /* madoka feature block */
+  .madoka{background:linear-gradient(160deg,var(--green) 0%,var(--green-deep) 100%);color:#e9e3d4;border-radius:3px;padding:54px 44px;margin-top:24px;position:relative;overflow:hidden}
+  .madoka::after{content:"";position:absolute;right:-40px;bottom:-40px;width:180px;height:180px;border:1px solid rgba(169,136,44,.28);border-radius:50%}
+  .madoka::before{content:"";position:absolute;right:-10px;bottom:-10px;width:120px;height:120px;border:1px solid rgba(169,136,44,.2);border-radius:50%}
+  .madoka .label{color:var(--gold)}
+  .madoka h2{color:#f1ebde;margin-bottom:22px}
+  .madoka p{color:#cfc8b6}
+  .madoka p strong{color:#fff}
+
+  /* steps */
+  .steps{counter-reset:s;margin-top:18px}
+  .step{position:relative;padding:26px 0 26px 56px;border-bottom:1px solid var(--line)}
+  .step:first-child{border-top:1px solid var(--line)}
+  .step::before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:28px;font-family:var(--serif);font-size:.9rem;color:var(--gold);letter-spacing:.05em}
+  .step h3{font-family:var(--serif);font-size:1.05rem;color:var(--green-deep);font-weight:600;margin-bottom:8px}
+  .step p{font-size:.93rem;margin:0}
+
+  /* pricing note */
+  .terms{margin-top:18px}
+  .terms .row{display:grid;grid-template-columns:130px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+  .terms .row:first-child{border-top:1px solid var(--line)}
+  .terms .k{font-family:var(--serif);color:var(--green-deep);letter-spacing:.04em}
+  .terms .v{color:var(--ink-soft)}
+  @media(max-width:560px){.terms .row{grid-template-columns:1fr;gap:4px}}
+
+  /* faq */
+  .faq{margin-top:18px}
+  .faq details{border-bottom:1px solid var(--line)}
+  .faq details:first-child{border-top:1px solid var(--line)}
+  .faq summary{list-style:none;cursor:pointer;padding:24px 30px 24px 0;font-family:var(--serif);font-size:1.0rem;color:var(--green-deep);position:relative;letter-spacing:.02em}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";position:absolute;right:4px;top:22px;color:var(--gold);font-size:1.2rem;transition:transform .3s}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq .a{padding:0 0 26px;font-size:.93rem;color:var(--ink-soft);line-height:1.95}
+
+  /* cta */
+  .cta{text-align:center;padding:96px 0 110px}
+  .cta h2{margin-bottom:24px}
+  .cta p{max-width:540px;margin:0 auto 40px}
+  .btn{display:inline-block;font-family:var(--serif);font-size:1.0rem;letter-spacing:.14em;color:var(--paper);background:var(--green-deep);padding:20px 52px;border-radius:2px;text-decoration:none;border:1px solid var(--green-deep);transition:all .4s ease;position:relative}
+  .btn:hover{background:transparent;color:var(--green-deep)}
+  .btn .arw{color:var(--gold);margin-left:10px}
+  .contact-note{margin-top:26px;font-size:.86rem;color:var(--brown);letter-spacing:.04em}
+  .contact-note a{color:var(--green-deep);text-decoration:none;border-bottom:1px solid var(--gold)}
+
+  /* portrait placeholder */
+  .portrait{width:108px;height:108px;border-radius:50%;border:1px solid var(--line);margin:0 auto 26px;display:flex;align-items:center;justify-content:center;background:var(--paper-2)}
+  .portrait span{font-family:var(--serif);font-size:.66rem;color:var(--brown);letter-spacing:.1em;text-align:center;line-height:1.7}
+
+  footer{text-align:center;padding:50px 0;border-top:1px solid var(--line);font-size:.78rem;color:var(--brown);letter-spacing:.1em;font-family:var(--serif)}
+
+  /* contact form */
+  .form{max-width:520px;margin:14px auto 0;text-align:left}
+  .form .fld{margin-bottom:22px}
+  .form label{display:block;font-family:var(--serif);font-size:.86rem;color:var(--green-deep);letter-spacing:.06em;margin-bottom:9px}
+  .form label .req{color:var(--gold);font-size:.72rem;margin-left:8px}
+  .form input,.form textarea{width:100%;background:var(--paper-2);border:1px solid var(--line);border-radius:2px;padding:14px 16px;font-family:var(--sans);font-size:.96rem;color:var(--ink);font-weight:300;transition:border-color .3s}
+  .form input:focus,.form textarea:focus{outline:none;border-color:var(--gold)}
+  .form textarea{resize:vertical;min-height:120px;line-height:1.8}
+  .form .send{width:100%;font-family:var(--serif);font-size:1.0rem;letter-spacing:.14em;color:var(--paper);background:var(--green-deep);padding:18px;border:1px solid var(--green-deep);border-radius:2px;cursor:pointer;transition:all .4s ease;margin-top:6px}
+  .form .send:hover{background:transparent;color:var(--green-deep)}
+  .form .ok{display:none;text-align:center;padding:30px 0;font-family:var(--serif);color:var(--green-deep);font-size:1.05rem;line-height:1.9}
+  .addr{margin-top:46px;padding-top:30px;border-top:1px solid var(--line);text-align:center;font-size:.86rem;color:var(--ink-soft);line-height:2.0;font-family:var(--serif);letter-spacing:.05em}
+  .addr .k{color:var(--brown);font-size:.78rem;letter-spacing:.14em;display:block;margin-bottom:6px}
+</style>
+</head>
+<body>
+
+<header>
+  <svg class="gauge" viewBox="0 0 300 150" fill="none">
+    <path d="M20 145 A130 130 0 0 1 280 145" stroke="#d8cfba" stroke-width="1"/>
+    <path d="M20 145 A130 130 0 0 1 180 32" stroke="#a9882c" stroke-width="1.5"/>
+    <g stroke="#d8cfba" stroke-width="1">
+      <line x1="150" y1="15" x2="150" y2="30"/>
+      <line x1="55" y1="55" x2="66" y2="66"/>
+      <line x1="245" y1="55" x2="234" y2="66"/>
+      <line x1="20" y1="145" x2="36" y2="145"/>
+      <line x1="280" y1="145" x2="264" y2="145"/>
+    </g>
+    <circle cx="150" cy="145" r="4" fill="#a9882c"/>
+    <line x1="150" y1="145" x2="188" y2="56" stroke="#33433a" stroke-width="1.5"/>
+  </svg>
+  <div class="wrap">
+    <div class="eyebrow">EIHARA HAYATO</div>
+    <h1>毎日一生懸命な人の隣を、<br><span class="em">歩く</span>人間でありたい。</h1>
+    <p class="lead">海外へ日本の工芸を届けて4年。<br>その現場で身につけた「業務を理解してかたちにする力」で、<br>AI導入・業務自動化から、ものづくりまで。</p>
+    <div class="sig">榮原 颯人 ／ Japan Classic 代表</div>
+  </div>
+</header>
+
+<div class="tick"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<section class="statement">
+  <div class="wrap reveal">
+    <p class="creed-lead">私にあるのは、経営の知識でも、<br>ビジネスのロジックでもありません。</p>
+    <p class="creed-mid">不安を抱えながら、毎日頑張る<br><span class="creed-you">日本の経営者と、事業者と一緒に。</span></p>
+    <p class="creed-tail">日本を良くする、という</p>
+    <p class="creed-word">覚悟。</p>
+    <p class="creed-end">ただ、それだけです。</p>
+  </div>
+</section>
+
+<section class="statement dark">
+  <div class="wrap reveal">
+    <p class="big">その不安と煩わしさを、<br><span class="em">私が引き受けます。</span></p>
+    <p class="sub">先が見えない経済の中で、一人で事業を背負う方。<br>社員とその家族の人生まで抱える経営者の方。<br>将来への不安も、日々の煩わしさも、まるごと。</p>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="wrap reveal">
+    <p class="big">複雑なものを、<br><span class="em">一本に。</span></p>
+    <p class="sub">ごちゃごちゃに絡まった業務を、あなたと細かく相談しながら、<br>誰でも使える、分かりやすい仕組みにほどいていきます。</p>
+  </div>
+</section>
+
+<div class="wrap reveal" style="padding:0 28px 40px">
+  <svg viewBox="0 0 700 220" fill="none" style="width:100%;height:auto;max-width:620px;display:block;margin:0 auto">
+    <!-- tangle on left -->
+    <text x="120" y="34" font-family="Shippori Mincho,serif" font-size="15" fill="#6b5a44" text-anchor="middle" letter-spacing="2">いまの業務</text>
+    <g stroke="#b9a888" stroke-width="1.2" fill="none" opacity=".85">
+      <path d="M40 90 C90 60,150 130,200 80 S250 50,210 120 S120 150,70 110 S40 130,90 150"/>
+      <path d="M55 70 C120 100,80 160,170 140 S230 90,180 70"/>
+      <path d="M60 130 C110 90,200 120,220 100"/>
+      <path d="M45 110 C100 140,160 90,210 140"/>
+    </g>
+    <!-- arrow -->
+    <line x1="300" y1="105" x2="400" y2="105" stroke="#a9882c" stroke-width="1.5"/>
+    <path d="M392 99 L402 105 L392 111" stroke="#a9882c" stroke-width="1.5" fill="none"/>
+    <text x="350" y="92" font-family="Shippori Mincho,serif" font-size="12" fill="#a9882c" text-anchor="middle" letter-spacing="2">ほどく</text>
+    <!-- single clean line on right -->
+    <text x="560" y="34" font-family="Shippori Mincho,serif" font-size="15" fill="#26332c" text-anchor="middle" letter-spacing="2">これから</text>
+    <line x1="450" y1="105" x2="660" y2="105" stroke="#33433a" stroke-width="2"/>
+    <circle cx="450" cy="105" r="4" fill="#a9882c"/>
+    <circle cx="660" cy="105" r="4" fill="#a9882c"/>
+    <text x="555" y="140" font-family="Zen Kaku Gothic New,sans-serif" font-size="12" fill="#56524a" text-anchor="middle">誰でも使える、一本の道筋に</text>
+  </svg>
+</div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">はじめに</div>
+    <h2>「やりたいことは見えている。<br>でも、仕組みにする方法が分からない。」</h2>
+    <p>そんな声を、これまで何度も聞いてきました。事業をやっていれば、毎日のように立ちはだかる壁です。</p>
+    <ul class="concerns">
+      <li>手作業の集計や転記に、毎月まとまった時間を取られている</li>
+      <li>AIを業務に入れたいが、何から始めればいいか分からない</li>
+      <li>海外に商品を売りたいが、仕組みの作り方が見えない</li>
+      <li>社内の業務が属人化していて、その人が抜けると回らない</li>
+      <li>頼める相手はいるが、自分の現場を本当に分かってくれる人がいない</li>
+    </ul>
+    <p>ひとつでも当てはまるなら、お役に立てるかもしれません。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">なぜ、この壁が生まれるのか</div>
+    <h2>道具の使い方ではなく、<br>「現場の業務」が分かる人が少ないから。</h2>
+    <p>AIもシステムも、いまや道具はそろっています。難しいのは道具の操作ではなく、<strong>その現場で何が起きていて、どこを仕組みに変えれば楽になるのかを見極めること</strong>です。</p>
+    <p>ここが分からないまま道具だけ入れても、現場には馴染みません。これはあなたの理解が足りないからではなく、業務とシステムの両方を地続きで分かる人が、そもそも少ないからです。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">できること</div>
+    <h2>業務を理解したうえで、<br>仕組みに落とします。</h2>
+    <div class="svc">
+      <div class="svc-item">
+        <div class="svc-no">01</div>
+        <div>
+          <div class="svc-h">AI導入・業務自動化<span class="tag">主軸</span></div>
+          <p class="svc-p">日々の手作業、繰り返しの判断、属人化した業務。現場を伺ったうえで、AIと自動化で引き受けられる部分を見極め、無理なく馴染むかたちで組み込みます。</p>
+        </div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-no">02</div>
+        <div>
+          <div class="svc-h">越境EC × AI<span class="tag">独自</span></div>
+          <p class="svc-p">日本の大手卸と組み、4年にわたり工芸品を海外へ販売してきた実体験があります。海外に売りたい事業者の、商品選びから販売の仕組み、AIの活用までを一貫して支えられます。</p>
+        </div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-no">03</div>
+        <div>
+          <div class="svc-h">社内システム開発</div>
+          <p class="svc-p">複雑で属人化しやすい現場の内部システムを、実際に開発・運用してきました。チャットボットの構築経験もあります。現場で本当に使われるものを、現場目線でつくります。</p>
+        </div>
+      </div>
+      <div class="svc-item">
+        <div class="svc-no">04</div>
+        <div>
+          <div class="svc-h">Webサイト・Webシステム</div>
+          <p class="svc-p">サイトやWebシステムの制作にも対応します。上記の取り組みの一部として、必要に応じてかたちにします。</p>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:30px;font-size:.93rem">まずはご相談から。何に困っているかを伺うところから始めます。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="statement">
+  <div class="wrap reveal">
+    <p class="big">毎日のその手間、<br><span class="em">まるごと無くせます。</span></p>
+    <p class="sub">たとえば、飲食店の棚卸し。<br>毎回スプレッドシートで一つひとつ確認する、あの時間。</p>
+  </div>
+</section>
+
+<div class="wrap reveal" style="padding:0 28px 30px">
+  <svg viewBox="0 0 700 200" fill="none" style="width:100%;height:auto;max-width:600px;display:block;margin:0 auto">
+    <!-- before: manual checklist -->
+    <text x="150" y="28" font-family="Shippori Mincho,serif" font-size="14" fill="#6b5a44" text-anchor="middle" letter-spacing="2">手作業のいま</text>
+    <g stroke="#b9a888" stroke-width="1" fill="none">
+      <rect x="55" y="50" width="190" height="120" rx="2"/>
+      <line x1="55" y1="78" x2="245" y2="78"/><line x1="55" y1="100" x2="245" y2="100"/>
+      <line x1="55" y1="122" x2="245" y2="122"/><line x1="55" y1="144" x2="245" y2="144"/>
+      <line x1="120" y1="50" x2="120" y2="170"/>
+    </g>
+    <g stroke="#b9a888" stroke-width="1.4"><path d="M128 66 l6 6 l12 -14" stroke="#a9882c"/><path d="M128 90 l6 6 l12 -14" stroke="#a9882c"/><path d="M128 112 l6 6 l12 -14" stroke="#a9882c"/></g>
+    <text x="150" y="192" font-family="Zen Kaku Gothic New,sans-serif" font-size="11" fill="#56524a" text-anchor="middle">一つずつ、毎回チェック</text>
+    <!-- arrow -->
+    <line x1="300" y1="110" x2="400" y2="110" stroke="#a9882c" stroke-width="1.5"/>
+    <path d="M392 104 L402 110 L392 116" stroke="#a9882c" stroke-width="1.5" fill="none"/>
+    <!-- after: one tap -->
+    <text x="555" y="28" font-family="Shippori Mincho,serif" font-size="14" fill="#26332c" text-anchor="middle" letter-spacing="2">お店に合うソフト</text>
+    <rect x="500" y="55" width="110" height="100" rx="6" stroke="#33433a" stroke-width="1.5" fill="none"/>
+    <path d="M540 100 A15 15 0 1 1 555 115" stroke="#a9882c" stroke-width="2" fill="none"/>
+    <circle cx="555" cy="105" r="2.5" fill="#a9882c"/>
+    <text x="555" y="180" font-family="Zen Kaku Gothic New,sans-serif" font-size="11" fill="#56524a" text-anchor="middle">ひと目で、終わる</text>
+  </svg>
+  <p style="text-align:center;font-size:.95rem;color:var(--ink-soft);max-width:540px;margin:14px auto 0;line-height:1.95">その時間と手間は、積み重なれば大きな人件費です。お店に合ったソフトがあれば、その労力はまるごと無くせます。</p>
+</div>
+
+<div class="rule"></div>
+
+<section class="statement">
+  <div class="wrap reveal">
+    <p class="big">「あの人が辞めたら」<br><span class="em">の不安を、終わりに。</span></p>
+    <p class="sub">システムを一人の社員に任せきりだと、<br>その人が抜けたとき、事業が止まります。</p>
+  </div>
+</section>
+
+<div class="wrap reveal" style="padding:0 28px 30px">
+  <svg viewBox="0 0 700 210" fill="none" style="width:100%;height:auto;max-width:600px;display:block;margin:0 auto">
+    <!-- before: everything routed through one person -->
+    <text x="150" y="26" font-family="Shippori Mincho,serif" font-size="14" fill="#6b5a44" text-anchor="middle" letter-spacing="2">一人に集中</text>
+    <circle cx="150" cy="105" r="20" stroke="#b9a888" stroke-width="1.2" fill="none"/>
+    <circle cx="150" cy="98" r="6" stroke="#b9a888" stroke-width="1.2" fill="none"/>
+    <path d="M138 116 a12 9 0 0 1 24 0" stroke="#b9a888" stroke-width="1.2" fill="none"/>
+    <g stroke="#b9a888" stroke-width="1" fill="none">
+      <line x1="60" y1="50" x2="132" y2="92"/><line x1="60" y1="105" x2="128" y2="105"/>
+      <line x1="60" y1="160" x2="132" y2="118"/><line x1="150" y1="50" x2="150" y2="84"/>
+    </g>
+    <g stroke="#b9a888" stroke-width="1" fill="none">
+      <rect x="36" y="42" width="20" height="16"/><rect x="36" y="97" width="20" height="16"/>
+      <rect x="36" y="152" width="20" height="16"/><rect x="140" y="36" width="20" height="14"/>
+    </g>
+    <text x="150" y="190" font-family="Zen Kaku Gothic New,sans-serif" font-size="11" fill="#56524a" text-anchor="middle">抜けると、止まる</text>
+    <!-- arrow -->
+    <line x1="300" y1="105" x2="400" y2="105" stroke="#a9882c" stroke-width="1.5"/>
+    <path d="M392 99 L402 105 L392 111" stroke="#a9882c" stroke-width="1.5" fill="none"/>
+    <!-- after: owner uses directly -->
+    <text x="555" y="26" font-family="Shippori Mincho,serif" font-size="14" fill="#26332c" text-anchor="middle" letter-spacing="2">社長一人でも</text>
+    <rect x="500" y="70" width="110" height="74" rx="4" stroke="#33433a" stroke-width="1.5" fill="none"/>
+    <line x1="500" y1="90" x2="610" y2="90" stroke="#33433a" stroke-width="1"/>
+    <circle cx="510" cy="80" r="2.5" fill="#a9882c"/>
+    <line x1="514" y1="105" x2="596" y2="105" stroke="#b9a888" stroke-width="1"/>
+    <line x1="514" y1="120" x2="570" y2="120" stroke="#b9a888" stroke-width="1"/>
+    <circle cx="555" cy="178" r="14" stroke="#33433a" stroke-width="1.4" fill="none"/>
+    <circle cx="555" cy="173" r="4" stroke="#33433a" stroke-width="1.4" fill="none"/>
+    <path d="M547 187 a8 6 0 0 1 16 0" stroke="#33433a" stroke-width="1.4" fill="none"/>
+    <line x1="555" y1="144" x2="555" y2="160" stroke="#a9882c" stroke-width="1.4"/>
+    <text x="555" y="206" font-family="Zen Kaku Gothic New,sans-serif" font-size="11" fill="#56524a" text-anchor="middle">中身を全て見せて、お渡しします</text>
+  </svg>
+</div>
+
+<div class="rule"></div>
+
+<section class="statement dark">
+  <div class="wrap reveal">
+    <p class="big">業務効率化で、<br><span class="em">人件費が軽くなる。</span></p>
+    <p class="sub">毎月の手作業が仕組みに変われば、コストは確実に下がります。<br>月あたり数十万円規模で変わることも、珍しくありません。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">これまで</div>
+    <h2>言葉より、積み重ねでお伝えします。</h2>
+    <div class="proof">
+      <div><div class="n">4<span style="font-size:1.4rem">年間</span></div><div class="t">21歳より越境ECサイト「Japan Classic」を一人で立ち上げ、運営。</div></div>
+      <div><div class="n">約1,000<span style="font-size:1.4rem">種</span></div><div class="t">日本の大手卸と提携し、陶磁器を中心に海外へ販売。</div></div>
+      <div><div class="n">実運用</div><div class="t">旅館兼不動産業の現場で、内部システムを開発し稼働中。</div></div>
+      <div><div class="n">制作中</div><div class="t">経理が苦手な人のための会計ソフト「まどか」を開発中。</div></div>
+    </div>
+    <p style="margin-top:30px;font-size:.95rem">後継者不足で消えかけている日本の手仕事を、世界へ。その志で運営してきたサイトです。</p>
+    <a href="https://www.japanclassic.shop/" target="_blank" rel="noopener" style="display:inline-block;font-family:var(--serif);font-size:.95rem;letter-spacing:.06em;color:var(--green-deep);text-decoration:none;border:1px solid var(--line);border-radius:2px;padding:14px 28px;transition:all .4s ease" onmouseover="this.style.borderColor='#a9882c'" onmouseout="this.style.borderColor='#d8cfba'">Japan Classic を見る<span style="color:var(--gold);margin-left:10px">↗</span></a>
+
+    <div style="margin-top:54px;padding:34px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+      <div style="font-family:var(--serif);font-size:1.15rem;color:var(--green-deep);letter-spacing:.06em;margin-bottom:6px">榮原 颯人 <span style="font-size:.8rem;color:var(--brown);letter-spacing:.1em">えいはら はやと</span></div>
+      <div style="font-size:.9rem;color:var(--ink-soft);line-height:2.0">
+        2001年7月29日生まれ。小学校から高校まで、9年間を野球に。<br>
+        慶應義塾大学 文学部 人文社会学科 哲学専攻。4年の秋より休学し、事業に専念。<br>
+        海外ECサイト Japan Classic 代表。
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <div class="madoka">
+      <div class="label">代表作のひとつ</div>
+      <h2>会計ソフト「まどか」を、<br>いま、つくっています。</h2>
+      <p>数字が怖い、経理が苦手——そんな人の味方になる会計ソフトです。専門用語を画面から消し、操作はやさしく、金額や税務は正確に。<strong>基本機能はずっと無料</strong>で提供します。</p>
+      <p>不安を煽って売るのではなく、お客様の不安そのものを引き受けて、安心を渡したい。その思想で、一つひとつ手を入れています。<strong>「無料でここまでやるのか」を、つくる姿勢そのものでお見せします。</strong></p>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">進め方</div>
+    <h2>初めての方にも、<br>分かりやすい順序で。</h2>
+    <div class="steps">
+      <div class="step"><h3>ご相談・ヒアリング</h3><p>何にお困りかを伺います。専門用語は使わず、現状を一緒に整理するところから始めます。</p></div>
+      <div class="step"><h3>ご提案・お見積もり</h3><p>解決の方針と、それによって何がどう変わるかを、率直にお伝えします。</p></div>
+      <div class="step"><h3>制作・納品</h3><p>ご要件を満たすまで、責任を持って仕上げます。完成品にご満足いただけるまで取り組みます。</p></div>
+      <div class="step"><h3>納品後のサポート</h3><p>納品後1か月は、無償でバグ対応・調整を承ります。その後の継続的な運用や追加開発は、保守契約として承ります。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">ご依頼にあたって</div>
+    <h2>不安を、こちらで引き受けます。</h2>
+    <p>「依頼して、もし成果が出なかったら」——そのご不安は当然です。だからこそ、お客様が抱えるリスクを、できる限りこちらで引き受けます。</p>
+    <div class="terms">
+      <div class="row"><div class="k">着手金</div><div class="v">ご依頼額の一部を着手時に。残りは納品・ご確認のうえで後払いです。</div></div>
+      <div class="row"><div class="k">成果へのコミット</div><div class="v">ご要件を満たすまで、責任を持って仕上げます。</div></div>
+      <div class="row"><div class="k">納品後サポート</div><div class="v">1か月は無償でバグ対応。以降は保守契約として継続して伴走します。</div></div>
+      <div class="row"><div class="k">ご相談</div><div class="v">まずは課題を伺うところから。相談だけでも構いません。</div></div>
+    </div>
+    <p style="margin-top:28px;font-size:.9rem;color:var(--brown)">※ ご依頼の規模や内容により、お見積もりは個別にご相談します。</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section>
+  <div class="wrap reveal">
+    <div class="label">よくあるご質問</div>
+    <h2>気になる点に、お答えします。</h2>
+    <div class="faq">
+      <details><summary>専門知識がなくても相談できますか。</summary><div class="a">もちろんです。むしろ、専門用語が分からない方のお力になりたいと思っています。現状を伺いながら、噛み砕いてご説明します。</div></details>
+      <details><summary>小さな会社・個人事業でも依頼できますか。</summary><div class="a">はい。規模の大小は問いません。お一人で事業をされている方の大変さは、私自身が4年間経験してきました。</div></details>
+      <details><summary>何から相談すればいいか分かりません。</summary><div class="a">「なんとなく困っている」で大丈夫です。何にお困りかを言葉にするところから、一緒に整理します。</div></details>
+      <details><summary>遠方でも対応できますか。</summary><div class="a">オンラインで対応できます。海外との取引も経験していますので、距離は問題になりません。</div></details>
+      <details><summary>まだ依頼するか決めていません。</summary><div class="a">構いません。お話を伺ったうえで、本当に必要かどうかも含めて、率直にお伝えします。無理にお勧めすることはありません。</div></details>
+    </div>
+  </div>
+</section>
+
+<div class="tick"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<section class="statement">
+  <div class="wrap reveal">
+    <p class="big">これは、単なる<br>ソフト開発ではありません。</p>
+    <p class="sub">社員を、家族を、地域を支える経営者の。<br>その心の負担を引き受ける仕事だと、考えています。</p>
+  </div>
+</section>
+
+<section class="statement dark" style="padding:110px 0">
+  <div class="wrap reveal">
+    <p class="big" style="font-size:clamp(1.9rem,5.6vw,3.2rem)">闇の中を歩く<br>あなたの<span class="em">隣に。</span></p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap reveal">
+    <div class="portrait"><span>近日<br>掲載予定</span></div>
+    <h2>まずは、お話を聞かせてください。</h2>
+    <p>困っていることを、そのままお聞かせください。解決できるかどうかも含めて、正直にお答えします。相談だけでも、もちろん構いません。</p>
+
+    <div class="form">
+      <div id="formBody">
+        <div class="fld">
+          <label>お名前 <span class="req">必須</span></label>
+          <input type="text" id="f-name" placeholder="例：山田 太郎">
+        </div>
+        <div class="fld">
+          <label>ご連絡先（メール）<span class="req">必須</span></label>
+          <input type="email" id="f-email" placeholder="例：you@example.com">
+        </div>
+        <div class="fld">
+          <label>お電話番号（任意）</label>
+          <input type="text" id="f-tel" placeholder="例：090-0000-0000">
+        </div>
+        <div class="fld">
+          <label>ご相談内容 <span class="req">必須</span></label>
+          <textarea id="f-msg" placeholder="どんなことにお困りか、わかる範囲でお聞かせください。「なんとなく困っている」で構いません。"></textarea>
+        </div>
+        <button class="send" id="f-send">この内容で相談する</button>
+      </div>
+      <div class="ok" id="formOk">
+        お問い合わせ画面を準備しました。<br>送信を完了してください。<br>
+        <span style="font-size:.85rem;color:var(--brown)">うまく開かない場合は contact@japanclassic.shop まで直接ご連絡ください。</span>
+      </div>
+    </div>
+
+    <div class="addr">
+      <span class="k">所在地</span>
+      東京都港区白金台4丁目<br>
+      Japan Classic ／ 榮原 颯人<br>
+      <span style="font-size:.82rem;color:var(--brown)">contact@japanclassic.shop</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  榮原 颯人 ／ Japan Classic<br>
+  <span style="font-size:.7rem;color:var(--line)">— 静かに、誠実に、確かなものを —</span>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.14});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  (function(){
+    const btn=document.getElementById('f-send');
+    if(!btn) return;
+    btn.addEventListener('click',function(){
+      const name=document.getElementById('f-name').value.trim();
+      const email=document.getElementById('f-email').value.trim();
+      const tel=document.getElementById('f-tel').value.trim();
+      const msg=document.getElementById('f-msg').value.trim();
+      if(!name||!email||!msg){
+        alert('お名前・ご連絡先・ご相談内容をご入力ください。');
+        return;
+      }
+      const body=
+        'お名前: '+name+'\n'+
+        'メール: '+email+'\n'+
+        '電話: '+(tel||'（未記入）')+'\n\n'+
+        'ご相談内容:\n'+msg;
+      const href='mailto:contact@japanclassic.shop'+
+        '?subject='+encodeURIComponent('ご相談：'+name+' 様')+
+        '&body='+encodeURIComponent(body);
+      window.location.href=href;
+      document.getElementById('formBody').style.display='none';
+      document.getElementById('formOk').style.display='block';
+    });
+  })();
+</script>
+</body>
+</html>
